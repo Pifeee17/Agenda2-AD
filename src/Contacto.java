@@ -23,6 +23,10 @@ public class Contacto {
         return ID;
     }
 
+    public void setId(int ID) {
+       this.ID = ID;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -51,3 +55,4 @@ public class Contacto {
         System.out.println(ID + "\t" + nombre + "\t" + telefono + "\t" + email);
     }
 }
+    
