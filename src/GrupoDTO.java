@@ -1,14 +1,14 @@
-public class Grupos {
+public class GrupoDTO {
     
     private int ID;
     private String nombre;
 
-    public Grupos(int ID, String nombre){
+    public GrupoDTO(int ID, String nombre){
         this.ID = ID;
         this.nombre = nombre;
     }
 
-    public Grupos(){
+    public GrupoDTO(){
         this.ID = 0;
         this.nombre = "";
     }

@@ -1,18 +1,18 @@
-public class Contacto {
+public class ContactoDTO {
 
     private String nombre;
     private String telefono;
     private String email;
     private int ID;
 
-    public Contacto( int ID, String nombre, String telefono, String email) {
+    public ContactoDTO( int ID, String nombre, String telefono, String email) {
         this.nombre = nombre;
         this.telefono = telefono;
         this.email = email;
         this.ID = ID;
     }
 
-    public Contacto() {
+    public ContactoDTO() {
         this.ID = 0;
         this.nombre = "";
         this.telefono = "";
