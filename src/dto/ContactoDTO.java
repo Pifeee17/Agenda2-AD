@@ -1,3 +1,6 @@
+package dto;
+
+
 public class ContactoDTO {
 
     private String nombre;
@@ -54,5 +57,6 @@ public class ContactoDTO {
     public void mostrarContacto() {
         System.out.println(ID + "\t" + nombre + "\t" + telefono + "\t" + email);
     }
+   
 }
     

@@ -1,3 +1,4 @@
+package dto;
 public class GrupoDTO {
     
     private int ID;

@@ -1,3 +1,4 @@
+package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -5,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import ConnectionAgenda.ConnectionAgenda;
+import dto.ContactoDTO;
 
 public class ContactoDAO {
 
@@ -31,7 +35,7 @@ public class ContactoDAO {
         }
     }
 
-     public List<ContactoDTO> findAll() {
+     public static List<ContactoDTO> findAll() {
         List<ContactoDTO> contactos = new ArrayList<>();
         String sql = "SELECT ID, nombre, telefono, email FROM Contactos";
 
@@ -54,46 +58,94 @@ public class ContactoDAO {
         return contactos;
     }
 
-    public void modificarContacto(ContactoDTO contacto){
-        String sql = "UPDATE Contactos SET Nombre = ?, Telefono = ?, Email = ? WHERE ID = ?";
+     public ContactoDTO findById(int id) {
+        String sql = "SELECT ID, Nombre, Telefono, Email FROM Contactos WHERE ID = ?";
         try (Connection conn = ConnectionAgenda.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, contacto.getID());
-            ps.setString(2, contacto.getNombre());
-            ps.setString(3, contacto.getTelefono());
-            ps.setString(4, contacto.getEmail());
+            ps.setInt(1, id);
 
-
-            ps.executeUpdate();
-
-            try (ResultSet rs = ps.getGeneratedKeys()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    contacto.setId(rs.getInt(1));
+                    ContactoDTO contacto = new ContactoDTO();
+                    contacto.setId(rs.getInt("ID"));
+                    contacto.setNombre(rs.getString("Nombre"));
+                    contacto.setTelefono(rs.getString("Telefono"));
+                    contacto.setEmail(rs.getString("Email"));
+                    return contacto;
                 }
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void eliminarContacto(ContactoDTO contacto){
-        String sql = "DELETE FROM Contactos where ID = ?";
-         try (Connection conn = ConnectionAgenda.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, contacto.getID());
-            ps.executeUpdate();
+    public void modificarContacto(ContactoDTO contacto) {
+    String sql = "UPDATE Contactos SET Nombre = ?, Telefono = ?, Email = ? WHERE ID = ?";
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+    try (Connection conn = ConnectionAgenda.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, contacto.getNombre());
+        ps.setString(2, contacto.getTelefono());
+        ps.setString(3, contacto.getEmail());
+        ps.setInt(4, contacto.getID()); 
+
+        ps.executeUpdate();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
+
+   public void delete(int id) {
+    String query = "DELETE FROM Contactos WHERE ID = ?";
+    String query2 = "DELETE FROM Grupos WHERE ID = ?";
+
+    try(Connection conn = ConnectionAgenda.getConnection()) {
+       
+        conn.setAutoCommit(false);
+
+        try (PreparedStatement psFA = conn.prepareStatement(query2); PreparedStatement psA = conn.prepareStatement(query)) {
+            psFA.setInt(1, id);
+            psFA.executeUpdate();
+            
+            psA.setInt(1, id);
+            psA.executeUpdate();
+            
+            conn.commit();
+        } catch(SQLException e){
+        e.printStackTrace();
+
+        try {
+            if (conn != null) {
+                conn.rollback();
+                System.err.println("Se hace ROLLBACK");
+            }
+        } catch (SQLException er) {
+            System.err.println("ERROR haciendo ROLLBACK");
+            er.printStackTrace();
         }
+
+    } catch (Exception e) {
+        System.err.println("ERROR de conexión");
+        e.printStackTrace();
+
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
 
-   public List<ContactoDTO> buscarEnGrupoID(int idGrupo) {
+}
+
+   public static List<ContactoDTO> buscarEnGrupoID(int idGrupo) {
     List<ContactoDTO> lista = new ArrayList<>();
-    String sql = "SELECT Contactos.* FROM Contactos JOIN Grupos ON Grupos.ID = Contactos.ID_GRUPOWHERE Grupos.ID = ?";
+    String sql = "SELECT Contactos.* FROM Contactos WHERE Grupo_id = ?";
 
     try (Connection conn = ConnectionAgenda.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -114,7 +166,6 @@ public class ContactoDAO {
         e.printStackTrace();
     }
     return lista;
-}
-
+    }
 }
 
