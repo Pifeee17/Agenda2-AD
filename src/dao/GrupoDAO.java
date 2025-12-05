@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ConnectionAgenda.ConnectionAgenda;
+import dto.ContactoDTO;
 import dto.GrupoDTO;
 
 public class GrupoDAO {
       public void create(GrupoDTO grupos) {
-        String sql = "INSERT INTO Grupo(Nombre) VALUES (?)";
+        String sql = "INSERT INTO Grupos(Nombre) VALUES (?)";
         try (Connection conn = ConnectionAgenda.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -110,4 +111,55 @@ public class GrupoDAO {
     }
 
 }
+
+  public static List<ContactoDTO> ContactoGrupo(int idGrupo) {
+    List<ContactoDTO> contactos = new ArrayList<>();
+
+    String sql = "SELECT c.ID, c.Nombre, c.Telefono, c.Email FROM Contactos c JOIN Contacto_Grupo cg ON cg.Id_Contacto = c.ID WHERE cg.Id_Grupo = ?";
+
+    try (Connection conn = ConnectionAgenda.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, idGrupo);
+
+        try (ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                ContactoDTO contacto = new ContactoDTO();
+                contacto.setId(rs.getInt("ID"));
+                contacto.setNombre(rs.getString("Nombre"));
+                contacto.setTelefono(rs.getString("Telefono"));
+                contacto.setEmail(rs.getString("Email"));
+                contactos.add(contacto);
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return contactos;
+}
+
+ public GrupoDTO findById(int id) {
+        String sql = "SELECT ID, Nombre FROM Grupos WHERE ID = ?";
+        try (Connection conn = ConnectionAgenda.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                   GrupoDTO grupo = new GrupoDTO();
+                    grupo.setID(rs.getInt("ID"));
+                    grupo.setNombre(rs.getString("Nombre"));
+                    return grupo;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

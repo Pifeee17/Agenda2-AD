@@ -167,5 +167,23 @@ public class ContactoDAO {
     }
     return lista;
     }
+
+    public void anadirContactoGrupo(int Id_Contacto, int Id_Grupo) {
+    String sql = "INSERT INTO Contacto_Grupo(Id_Contacto, Id_Grupo) VALUES (?, ?)";
+
+    try (Connection conn = ConnectionAgenda.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, Id_Contacto);
+        ps.setInt(2, Id_Grupo);
+
+        ps.executeUpdate();
+
+        System.out.println("Contacto agregado al grupo correctamente.");
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 }
 
+}
