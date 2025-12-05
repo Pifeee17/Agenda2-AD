@@ -18,6 +18,10 @@ public class GrupoDTO {
         return ID;
     }
 
+    public void setID(int ID){
+        this.ID = ID;
+    }
+
     public String getNombre(){
         return nombre;
     }

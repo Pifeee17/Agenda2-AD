@@ -103,14 +103,14 @@ public class ContactoDAO {
 
 
    public void delete(int id) {
-    String query = "DELETE FROM Contactos WHERE ID = ?";
-    String query2 = "DELETE FROM Grupos WHERE ID = ?";
+    String query = "DELETE FROM Contacto_Grupo WHERE Id_Contacto = ?";
+    String query2 = "DELETE FROM Contacto WHERE ID = ?";
 
     try(Connection conn = ConnectionAgenda.getConnection()) {
        
         conn.setAutoCommit(false);
 
-        try (PreparedStatement psFA = conn.prepareStatement(query2); PreparedStatement psA = conn.prepareStatement(query)) {
+        try (PreparedStatement psFA = conn.prepareStatement(query); PreparedStatement psA = conn.prepareStatement(query2)) {
             psFA.setInt(1, id);
             psFA.executeUpdate();
             

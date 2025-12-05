@@ -4,7 +4,7 @@ import java.util.Scanner;
 import dao.ContactoDAO;
 import dto.ContactoDTO;
 
-public class Videoclub {
+public class AgendaSQL {
 
     private static final Scanner sc = new Scanner(System.in);
     private static final ContactoDAO actorDAO = new ContactoDAO();
@@ -12,35 +12,55 @@ public class Videoclub {
     public static void main(String[] args) throws Exception {
 
 
-        int opcion = 0;
+        String opcion = "0";
 
-        while (opcion != 6) {
-            mostrarMenu();
-            opcion = sc.nextInt();
-            sc.nextLine(); // Consumir salto de línea
 
-            switch (opcion) {
-                case 1 -> crearContacto();
-                case 2 -> listarActores();
-                case 3 -> buscarEnGrupoID();
-                case 4 -> modificarContacto();
-                case 5 -> borrarActor();
-                case 6 -> System.out.println("Saliendo...");
-                default -> System.out.println("Opción no válida.");
-            }
+    while (true) {
+        PrimerMenu();
+        opcion = sc.nextLine();
+
+        switch (opcion) {
+            case "1" -> menuContactos();
+            case "2" -> System.out.println("Menu grupos");
+            case "3" -> {System.out.println("Saliendo..."); 
+            return;}
+              
+            default -> System.out.println("Opción no válida.");
         }
-
-        sc.close();
     }
+}
 
-    private static void mostrarMenu() {
+private static void menuContactos() {
+    String opcion = "";
+    while (!opcion.equals("8")) {
+        Menu();
+        opcion = sc.nextLine();
+
+        switch (opcion) {
+            case "1" -> crearContacto();
+            case "2" -> listarActores();
+            case "3" -> buscarEnGrupoID();
+            case "4" -> modificarContacto();
+            case "5" -> borrarActor();
+            case "6" -> System.out.println("Metodo aun no implementado");
+            case "7" -> System.out.println("Metodo aun no implementado");
+            case "8" -> System.out.println("Volviendo al menú principal...");
+            default -> System.out.println("Opción no válida.");
+        }
+    }
+}
+
+
+    private static void Menu() {
         System.out.println("\n--- Menú de Contactos ---");
         System.out.println("1. Crear Contacto");
         System.out.println("2. Listar Contacto");
         System.out.println("3. Buscar Contacto (ID)");
         System.out.println("4. Modificar Contacto (ID)");
         System.out.println("5. Eliminar Contacto (ID)");
-        System.out.println("6. Salir");
+        System.out.println("6. Cargar CSV");
+        System.out.println("7. Añadir usuario (ID) a grupo (ID)");
+        System.out.println("8. Salir");
         System.out.print("Elige una opción: ");
     }
 
@@ -90,12 +110,15 @@ private static void modificarContacto() {
     if (contacto != null) {
         System.out.print("Nuevo nombre (" + contacto.getNombre() + "): ");
         String nombre = sc.nextLine();
+        contacto.setNombre(nombre);
 
         System.out.print("Nuevo teléfono (" + contacto.getTelefono() + "): ");
         String telefono = sc.nextLine();
+        contacto.setTelefono(telefono);
 
         System.out.print("Nuevo email (" + contacto.getEmail() + "): ");
         String email = sc.nextLine();
+        contacto.setEmail(email);
         dao.modificarContacto(contacto);
         System.out.println("Contacto actualizado.");
     } 
@@ -109,10 +132,16 @@ private static void modificarContacto() {
     int id = sc.nextInt();
     sc.nextLine();
 
-    ContactoDAO dao = new ContactoDAO();   // crear instancia
-    dao.delete(id);                        // llamar al método
+    ContactoDAO dao = new ContactoDAO();   
+    dao.delete(id);                        
 
     System.out.println("Actor borrado si existía.");
 }
-
+    private static void PrimerMenu() {
+        System.out.println("\n--- Menú ---");
+        System.out.println("1. Contactos");
+        System.out.println("2. Grupo");
+        System.out.println("3. Salir");
+        System.out.print("Elige una opción: ");
+    }
 }
