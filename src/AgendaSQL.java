@@ -148,20 +148,69 @@ private static void menuContactos() {
         }
     }
 
-    private static void crearContacto() {
-        System.out.print("Introduce nombre: ");
-        String nombre = sc.nextLine();
-        System.out.print("Introduce telefono: ");
-        String telefono = sc.nextLine();
-        System.out.print("Introduce email: ");
-        String email = sc.nextLine();
-        ContactoDTO nuevo = new ContactoDTO();
-        nuevo.setNombre(nombre);
-        nuevo.setTelefono(telefono);
-        nuevo.setEmail(email);
-        ContactoDAO.create(nuevo);
-        System.out.println("Contacto creado con ID: " + nuevo.getID());
+        private static boolean validarNombre(String nombre) {
+     return nombre.matches("^[A-Z][a-z]+");
     }
+
+    private static boolean validarTelefono(String telefono) {
+     return telefono.matches("[0-9]{9}");
+    }
+
+    //Esto es: algo@algo.algo
+    private static boolean validarEmail(String email) {
+        return email.matches("^.+@.+\\..+$");
+    }
+
+
+   private static void crearContacto() {
+    System.out.print("Introduce nombre: ");
+    String nombre = sc.nextLine();
+    while (!validarNombre(nombre)) {
+        System.out.println("Nombre inválido. Debe empezar por mayúscula y solo contener letras.");
+        System.out.print("Introduce nombre: ");
+        nombre = sc.nextLine();
+    }
+
+   System.out.print("Introduce telefono: ");
+    String telefono = sc.nextLine();
+    while (!validarTelefono(telefono)) {
+        System.out.println("Teléfono inválido. Debe contener exactamente 9 dígitos.");
+        System.out.print("Introduce telefono: ");
+        telefono = sc.nextLine();
+    }
+
+    System.out.print("Introduce email: ");
+    String email = sc.nextLine();
+    while (!validarEmail(email)) {
+        System.out.println("Email inválido. Debe contener texto@texto.texto");
+        System.out.print("Introduce email: ");
+        email = sc.nextLine();
+    }
+
+    ContactoDTO duplicado = ContactoDAO.buscarDuplicado(telefono, email);
+
+    if (duplicado != null) {
+        System.out.println("\n¡ATENCIÓN! Existe un contacto con el mismo teléfono o email:");
+        duplicado.mostrarContacto();
+
+        System.out.print("¿Deseas continuar igualmente? (S/N): ");
+        String respuesta = sc.nextLine().trim().toUpperCase();
+
+        if (!respuesta.equals("S")) {
+            System.out.println("Creación cancelada.");
+            return;
+        }
+    }
+
+    ContactoDTO nuevo = new ContactoDTO();
+    nuevo.setNombre(nombre);
+    nuevo.setTelefono(telefono);
+    nuevo.setEmail(email);
+
+    ContactoDAO.create(nuevo);
+    System.out.println("Contacto creado con ID: " + nuevo.getID());
+}
+
 
 private static void modificarContacto() {
     System.out.print("Introduce ID del contacto a actualizar: ");

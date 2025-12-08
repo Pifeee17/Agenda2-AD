@@ -185,5 +185,30 @@ public class ContactoDAO {
         e.printStackTrace();
     }
 }
+public ContactoDTO buscarDuplicado(String telefono, String email) {
+    String sql = "SELECT * FROM Contactos WHERE Telefono = ? OR Email = ?";
+
+    try (Connection conn = ConnectionAgenda.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, telefono);
+        ps.setString(2, email);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                ContactoDTO c = new ContactoDTO();
+                c.setId(rs.getInt("ID"));
+                c.setNombre(rs.getString("Nombre"));
+                c.setTelefono(rs.getString("Telefono"));
+                c.setEmail(rs.getString("Email"));
+                return c; // Devuelve el encontrado
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null; // Si no hay duplicados
+}
+
 
 }
