@@ -312,7 +312,7 @@ private static void buscarContactoEnTodo() {
     List<ContactoDTO> resultados = ContactoDAO.buscarEnTodo(texto);
 
     if (resultados.isEmpty()) {
-        System.out.println("No se encontraron contactos con ese criterio.");
+        System.out.println("No se encontraron contactos.");
     } else {
         System.out.println("Resultados encontrados:");
         for (ContactoDTO c : resultados) {
@@ -320,9 +320,6 @@ private static void buscarContactoEnTodo() {
         }
     }
 }
-
-
-
 
 //GRUPOS ->
     private static void listarGrupos() {
@@ -333,9 +330,18 @@ private static void buscarContactoEnTodo() {
     }
 
     private static void modificarGrupo() {
-    System.out.print("Introduce ID del grupo a actualizar: ");
-    int id = sc.nextInt();
-    sc.nextLine();
+        int id;
+        while(true){
+            try {
+            System.out.print("Introduce ID del grupo a actualizar: ");
+            id = Integer.parseInt(sc.nextLine());
+            break;
+            } catch (Exception e) {
+                System.err.println("Opcion no valida.");
+            }
+    
+        }
+   
 
     GrupoDAO dao = new GrupoDAO();
     GrupoDTO grupo = dao.findById(id);
@@ -352,19 +358,36 @@ private static void buscarContactoEnTodo() {
     }
 }
 private static void borrarGrupo() {
-    System.out.print("Introduce ID del grupo a borrar: ");
-    int id = sc.nextInt();
-    sc.nextLine();
+   int id;
+        while(true){
+            try {
+            System.out.print("Introduce ID del grupo a borrar: ");
+            id = Integer.parseInt(sc.nextLine());
+            break;
+            } catch (Exception e) {
+                System.err.println("Opcion no valida.");
+            }
+    
+        }
 
     GrupoDAO dao = new GrupoDAO();   
     dao.delete(id);                        
 
     System.out.println("Grupo borrado si existía.");
 }
+
 private static void verContactosEnGrupo() {
-    System.out.print("Introduce ID del grupo: ");
-    int idGrupo = sc.nextInt();
-    sc.nextLine();
+   int idGrupo;
+        while(true){
+            try {
+            System.out.print("Introduce ID del grupo: ");
+            idGrupo = Integer.parseInt(sc.nextLine());
+            break;
+            } catch (Exception e) {
+                System.err.println("Opcion no valida.");
+            }
+    
+        }
 
     List<ContactoDTO> contactos = GrupoDao.ContactoGrupo(idGrupo);
 
