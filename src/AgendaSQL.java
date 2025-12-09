@@ -48,21 +48,25 @@ private static void menuContactos() {
             crearContacto();
             break;
             case "2" : 
-            listarActores();
+            listarContactos();
             break;
             case "3" : 
-            buscarEnGrupoID();
+            listarContactos();
+            buscarContactoEnTodo();
             break;
             case "4" : 
+            listarContactos();
             modificarContacto();
             break;
             case "5" : 
+            listarContactos();
             borrarContacto();
             break;
             case "6" : 
             cargarCSV();
             break;
             case "7" : 
+            listarContactos();
             anadirContactoAGrupo();
             break;
             case "8" : 
@@ -78,7 +82,7 @@ private static void menuContactos() {
         System.out.println("\n--- Menú de Contactos ---");
         System.out.println("1. Crear Contacto");
         System.out.println("2. Listar Contacto");
-        System.out.println("3. Buscar Contacto (ID)");
+        System.out.println("3. Buscar Contacto (todos los campos)");
         System.out.println("4. Modificar Contacto (ID)");
         System.out.println("5. Eliminar Contacto (ID)");
         System.out.println("6. Cargar CSV");
@@ -100,12 +104,14 @@ private static void menuContactos() {
             listarGrupos();
             break;
             case "3" : 
+            listarGrupos();
             modificarGrupo();
             break;
             case "4" : 
             borrarGrupo();
             break;
             case "5" : 
+            listarGrupos();
             verContactosEnGrupo();
             break;
             case "6" : 
@@ -128,23 +134,10 @@ private static void menuContactos() {
         System.out.print("Elige una opción: ");
     }
 
-    private static void listarActores() {
+    private static void listarContactos() {
         List<ContactoDTO> contactos = ContactoDAO.findAll();
         for(ContactoDTO contacto : contactos){
             contacto.mostrarContacto();
-        }
-    }
-
-    private static void buscarEnGrupoID() {
-        System.out.print("Introduce ID del grupo: ");
-        int id_Grupo = sc.nextInt();
-        sc.nextLine();
-       List<ContactoDTO> contactos = ContactoDAO.buscarEnGrupoID(id_Grupo);
-
-        if (contactos != null) {
-            System.out.println(contactos);
-        } else {
-            System.out.println("Contactos no encontrados.");
         }
     }
 
@@ -221,16 +214,31 @@ private static void modificarContacto() {
     ContactoDTO contacto = dao.findById(id);
 
     if (contacto != null) {
-        System.out.print("Nuevo nombre (" + contacto.getNombre() + "): ");
-        String nombre = sc.nextLine();
+        System.out.print("Introduce nombre: ");
+    String nombre = sc.nextLine();
+    while (!validarNombre(nombre)) {
+        System.out.println("Nombre inválido. Debe empezar por mayúscula y solo contener letras.");
+        System.out.print("Introduce nombre: ");
+        nombre = sc.nextLine();
+    }
+
+   System.out.print("Introduce telefono: ");
+    String telefono = sc.nextLine();
+    while (!validarTelefono(telefono)) {
+        System.out.println("Teléfono inválido. Debe contener exactamente 9 dígitos.");
+        System.out.print("Introduce telefono: ");
+        telefono = sc.nextLine();
+    }
+
+    System.out.print("Introduce email: ");
+    String email = sc.nextLine();
+    while (!validarEmail(email)) {
+        System.out.println("Email inválido. Debe contener texto@texto.texto");
+        System.out.print("Introduce email: ");
+        email = sc.nextLine();
+    }
         contacto.setNombre(nombre);
-
-        System.out.print("Nuevo teléfono (" + contacto.getTelefono() + "): ");
-        String telefono = sc.nextLine();
         contacto.setTelefono(telefono);
-
-        System.out.print("Nuevo email (" + contacto.getEmail() + "): ");
-        String email = sc.nextLine();
         contacto.setEmail(email);
         dao.modificarContacto(contacto);
         System.out.println("Contacto actualizado.");
@@ -296,6 +304,23 @@ private static void cargarCSV() {
         System.out.println("Contacto cargado: " + contacto.getNombre() + " (ID: " + contacto.getID() + ")");
     }
 }
+
+private static void buscarContactoEnTodo() {
+    System.out.print("Introduce texto de búsqueda: ");
+    String texto = sc.nextLine();
+
+    List<ContactoDTO> resultados = ContactoDAO.buscarEnTodo(texto);
+
+    if (resultados.isEmpty()) {
+        System.out.println("No se encontraron contactos con ese criterio.");
+    } else {
+        System.out.println("Resultados encontrados:");
+        for (ContactoDTO c : resultados) {
+            c.mostrarContacto();
+        }
+    }
+}
+
 
 
 

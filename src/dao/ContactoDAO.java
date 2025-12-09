@@ -104,7 +104,7 @@ public class ContactoDAO {
 
    public void delete(int id) {
     String query = "DELETE FROM Contacto_Grupo WHERE Id_Contacto = ?";
-    String query2 = "DELETE FROM Contacto WHERE ID = ?";
+    String query2 = "DELETE FROM Contactos WHERE ID = ?";
 
     try(Connection conn = ConnectionAgenda.getConnection()) {
        
@@ -143,31 +143,6 @@ public class ContactoDAO {
 
 }
 
-   public static List<ContactoDTO> buscarEnGrupoID(int idGrupo) {
-    List<ContactoDTO> lista = new ArrayList<>();
-    String sql = "SELECT Contactos.* FROM Contactos WHERE Grupo_id = ?";
-
-    try (Connection conn = ConnectionAgenda.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-        ps.setInt(1, idGrupo);
-
-        try (ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                ContactoDTO contacto = new ContactoDTO();
-                contacto.setId(rs.getInt("ID"));
-                contacto.setNombre(rs.getString("Nombre"));
-                contacto.setTelefono(rs.getString("Telefono"));
-                contacto.setEmail(rs.getString("Email"));
-                lista.add(contacto);
-            }
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return lista;
-    }
-
     public void anadirContactoGrupo(int Id_Contacto, int Id_Grupo) {
     String sql = "INSERT INTO Contacto_Grupo(Id_Contacto, Id_Grupo) VALUES (?, ?)";
 
@@ -201,13 +176,43 @@ public ContactoDTO buscarDuplicado(String telefono, String email) {
                 c.setNombre(rs.getString("Nombre"));
                 c.setTelefono(rs.getString("Telefono"));
                 c.setEmail(rs.getString("Email"));
-                return c; // Devuelve el encontrado
+                return c; 
             }
         }
     } catch (SQLException e) {
         e.printStackTrace();
     }
-    return null; // Si no hay duplicados
+    return null; 
+}
+
+public List<ContactoDTO> buscarEnTodo(String texto) {
+    List<ContactoDTO> lista = new ArrayList<>();
+    String sql = "SELECT * FROM Contactos WHERE Nombre LIKE ? OR Telefono LIKE ? OR Email LIKE ?";
+
+    try (Connection conn = ConnectionAgenda.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        String patron = "%" + texto + "%";
+
+        ps.setString(1, patron);
+        ps.setString(2, patron);
+        ps.setString(3, patron);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                ContactoDTO contacto = new ContactoDTO();
+                contacto.setId(rs.getInt("ID"));
+                contacto.setNombre(rs.getString("Nombre"));
+                contacto.setTelefono(rs.getString("Telefono"));
+                contacto.setEmail(rs.getString("Email"));
+                lista.add(contacto);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return lista;
 }
 
 
