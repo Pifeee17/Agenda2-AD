@@ -37,6 +37,8 @@ public class ContactoDAO {
         }
     }
 
+
+
      public static List<ContactoDTO> findAll() {
         List<ContactoDTO> contactos = new ArrayList<>();
         String sql = "SELECT ID, nombre, telefono, email FROM Contactos";
@@ -60,6 +62,29 @@ public class ContactoDAO {
         }
         return contactos;
     }
+
+    public List<Integer> obtenerGruposDeContacto(int idContacto) {
+    List<Integer> grupos = new ArrayList<>();
+    String sql = "SELECT Id_Grupo FROM Contacto_Grupo WHERE Id_Contacto = ?";
+
+    try (Connection conn = ConnectionAgenda.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, idContacto);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                grupos.add(rs.getInt("Id_Grupo"));
+            }
+        }
+
+    } catch (SQLException e) {
+        System.err.println("ERROR al obtener grupos del contacto.");
+        e.printStackTrace();
+    }
+    return grupos;
+}
+
 
      public ContactoDTO findById(int id) {
         String sql = "SELECT ID, Nombre, Telefono, Email FROM Contactos WHERE ID = ?";

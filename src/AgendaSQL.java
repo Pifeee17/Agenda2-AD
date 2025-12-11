@@ -40,7 +40,7 @@ public class AgendaSQL {
 
 private static void menuContactos() {
     String opcion = "";
-    while (!opcion.equals("8")) {
+    while (!opcion.equals("9")) {
         Menu();
         opcion = sc.nextLine();
 
@@ -63,14 +63,20 @@ private static void menuContactos() {
             listarContactos();
             borrarContacto();
             break;
-            case "6" : 
+            case "6" :
+            verGruposDeContacto();
+            break; 
+            case "7" : 
             cargarCSV();
             break;
-            case "7" : 
+            case "8" : 
+            System.out.println("-- Contactos --");
             listarContactos();
+            System.out.println("-- Grupos --");
+            listarGrupos();
             anadirContactoAGrupo();
             break;
-            case "8" : 
+            case "9" : 
             System.out.println("Saliendo al menu principal.");
             break;
             default : System.out.println("Opción no válida.");
@@ -86,9 +92,10 @@ private static void menuContactos() {
         System.out.println("3. Buscar Contacto (todos los campos)");
         System.out.println("4. Modificar Contacto (ID)");
         System.out.println("5. Eliminar Contacto (ID)");
-        System.out.println("6. Cargar CSV");
-        System.out.println("7. Añadir usuario (ID) a grupo (ID)");
-        System.out.println("8. Salir");
+        System.out.println("6. Encontrar Grupos de Contacto (ID)");
+        System.out.println("7. Cargar CSV");
+        System.out.println("8. Añadir usuario (ID) a grupo (ID)");
+        System.out.println("9. Salir");
         System.out.print("Elige una opción: ");
     }
     private static void MenuGrupos() {
@@ -109,6 +116,7 @@ private static void menuContactos() {
             modificarGrupo();
             break;
             case "4" : 
+            listarGrupos();
             borrarGrupo();
             break;
             case "5" : 
@@ -388,6 +396,40 @@ private static void buscarContactoEnTodo() {
         }
     }
 }
+
+private static void verGruposDeContacto() {
+
+    System.out.print("Introduce ID del contacto: ");
+    int idContacto;
+
+    while (true) {
+        try {
+            idContacto = Integer.parseInt(sc.nextLine());
+            break;
+        } catch (NumberFormatException e) {
+            System.err.println("ID no válido. Intenta de nuevo.");
+        }
+    }
+
+    ContactoDTO c = ContactoDAO.findById(idContacto);
+    if (c == null) {
+        System.out.println("El contacto no existe.");
+        return;
+    }
+
+    List<Integer> grupos = ContactoDAO.obtenerGruposDeContacto(idContacto);
+
+    System.out.println("\nEl contacto pertenece a los siguientes grupos:");
+
+    if (grupos.isEmpty()) {
+        System.out.println("(No pertenece a ningún grupo)");
+    } else {
+        for (int i = 0; i < grupos.size(); i++) {
+            System.out.println(" - Grupo ID: " + grupos.get(i));
+        }
+    }
+}
+
 
 //GRUPOS ->
     private static void listarGrupos() {
