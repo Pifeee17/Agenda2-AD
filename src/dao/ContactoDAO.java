@@ -30,7 +30,9 @@ public class ContactoDAO {
                 }
             }
 
+
         } catch (SQLException e) {
+            System.err.println("Error al CREAR contacto.");
             e.printStackTrace();
         }
     }
@@ -53,6 +55,7 @@ public class ContactoDAO {
             }
 
         } catch (SQLException e) {
+            System.err.println("ERROR al BUSCAR contacto.");
             e.printStackTrace();
         }
         return contactos;
@@ -77,6 +80,7 @@ public class ContactoDAO {
             }
 
         } catch (SQLException e) {
+            System.err.println("ERROR al BUSCAR contacto.");
             e.printStackTrace();
         }
         return null;
@@ -97,10 +101,10 @@ public class ContactoDAO {
         ps.executeUpdate();
 
     } catch (SQLException e) {
+        System.err.println("ERROR al MODIFICAR el CONTACTO.");
         e.printStackTrace();
     }
 }
-
 
    public void delete(int id) {
     String query = "DELETE FROM Contacto_Grupo WHERE Id_Contacto = ?";
@@ -157,6 +161,7 @@ public class ContactoDAO {
         System.out.println("Contacto agregado al grupo correctamente.");
 
     } catch (SQLException e) {
+        System.err.println("ERROR al añadir CONTACTO A GRUPO.");
         e.printStackTrace();
     }
 }
@@ -179,7 +184,9 @@ public ContactoDTO buscarDuplicado(String telefono, String email) {
                 return c; 
             }
         }
+       
     } catch (SQLException e) {
+        System.err.println("ERROR al BUSCAR DUPLICADOS.");
         e.printStackTrace();
     }
     return null; 
@@ -208,7 +215,9 @@ public List<ContactoDTO> buscarEnTodo(String texto) {
                 lista.add(contacto);
             }
         }
+        
     } catch (SQLException e) {
+        System.err.println("ERROR al buscar igualdades.");
         e.printStackTrace();
     }
 

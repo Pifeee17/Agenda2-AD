@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -207,8 +208,16 @@ private static void menuContactos() {
 
 private static void modificarContacto() {
     System.out.print("Introduce ID del contacto a actualizar: ");
-    int id = sc.nextInt();
-    sc.nextLine();
+    int id;
+    while (true) {
+        try {
+            id = Integer.parseInt(sc.nextLine());
+            break;
+    } catch (NumberFormatException e){
+        System.err.println("Opcion no valida. ID incorrecto.");
+        System.out.print("Introduce ID del contacto a actualizar: ");
+    }
+}
 
     ContactoDAO dao = new ContactoDAO();
     ContactoDTO contacto = dao.findById(id);
@@ -237,21 +246,47 @@ private static void modificarContacto() {
         System.out.print("Introduce email: ");
         email = sc.nextLine();
     }
+
+        ContactoDTO duplicado = ContactoDAO.buscarDuplicado(telefono, email);
+
+    if (duplicado != null) {
+        System.out.println("\n¡ATENCIÓN! Existe un contacto con el mismo teléfono o email:");
+        duplicado.mostrarContacto();
+
+        System.out.print("¿Deseas continuar igualmente? (S/N): ");
+        String respuesta = sc.nextLine().trim().toUpperCase();
+
+        if (!respuesta.equals("S")) {
+            System.out.println("Creación cancelada.");
+            return;
+        }
+    } 
+    
         contacto.setNombre(nombre);
         contacto.setTelefono(telefono);
         contacto.setEmail(email);
         dao.modificarContacto(contacto);
         System.out.println("Contacto actualizado.");
-    } 
-    else {
+
+}else {
         System.out.println("Contacto no encontrado.");
     }
+    
 }
 
     private static void borrarContacto() {
     System.out.print("Introduce ID del contacto a borrar: ");
-    int id = sc.nextInt();
-    sc.nextLine();
+    int id;
+
+    while (true) {
+        try {
+            id = Integer.parseInt(sc.nextLine());
+            break;
+    } catch (NumberFormatException e){
+        System.err.println("Opcion no valida. ID incorrecto.");
+        System.out.print("Introduce ID del contacto a actualizar: ");
+    }
+}
 
     ContactoDAO dao = new ContactoDAO();   
     dao.delete(id);                        
@@ -275,17 +310,50 @@ private static void modificarContacto() {
         System.out.println("Grupo creado con ID: " + nuevo.getID());
     }
 
-    private static void anadirContactoAGrupo() {
-    System.out.print("Introduce ID del contacto: ");
-    int Id_Contacto = sc.nextInt();
-    sc.nextLine();
+private static void anadirContactoAGrupo() {
 
-    System.out.print("Introduce ID del grupo: ");
-    int Id_Grupo = sc.nextInt();
-    sc.nextLine();
+    ContactoDAO contactoDAO = new ContactoDAO();
+    GrupoDAO grupoDAO = new GrupoDAO();
 
-    ContactoDAO.anadirContactoGrupo(Id_Contacto, Id_Grupo);
+    int Id_Contacto;
+    while (true) {
+        System.out.print("Introduce ID del contacto: ");
+        try {
+            Id_Contacto = Integer.parseInt(sc.nextLine());
+
+            
+            if (contactoDAO.findById(Id_Contacto) == null) {
+                System.err.println("ERROR: El contacto con ID " + Id_Contacto + " no existe.");
+                continue;
+            }
+
+            break;
+        } catch (NumberFormatException e) {
+            System.err.println("Opcion no valida. ID incorrecto.");
+        }
+    }
+
+    int Id_Grupo;
+    while (true) {
+        System.out.print("Introduce ID del grupo: ");
+        try {
+            Id_Grupo = Integer.parseInt(sc.nextLine());
+
+        
+            if (grupoDAO.findById(Id_Grupo) == null) {
+                System.err.println("ERROR: El grupo con ID " + Id_Grupo + " no existe.");
+                continue;
+            }
+
+            break;
+        } catch (NumberFormatException e) {
+            System.err.println("Opcion no valida. ID incorrecto.");
+        }
+    }
+
+    contactoDAO.anadirContactoGrupo(Id_Contacto, Id_Grupo);
 }
+
 
 private static void cargarCSV() {
     System.out.print("Introduce la ruta del archivo CSV: ");

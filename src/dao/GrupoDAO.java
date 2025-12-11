@@ -29,6 +29,7 @@ public class GrupoDAO {
             }
 
         } catch (SQLException e) {
+            System.err.println("ERROR al CREAR GRUPO.");
             e.printStackTrace();
         }
     }
@@ -47,8 +48,9 @@ public class GrupoDAO {
                 grupo.setNombre(rs.getString("Nombre"));
                 grupos.add(grupo);
             }
-
+           
         } catch (SQLException e) {
+            System.err.println("ERROR al BUSCAR GRUPO.");
             e.printStackTrace();
         }
         return grupos;
@@ -66,6 +68,7 @@ public class GrupoDAO {
         ps.executeUpdate();
 
     } catch (SQLException e) {
+        System.err.println("ERROR al MODIFICAR el grupo.");
         e.printStackTrace();
     }
 }
@@ -107,6 +110,7 @@ public class GrupoDAO {
         }
 
     } catch (SQLException e) {
+        System.err.println("ERROR al BORRAR GRUPO.");
         e.printStackTrace();
     }
 
@@ -135,6 +139,7 @@ public class GrupoDAO {
         }
 
     } catch (SQLException e) {
+        System.err.println("ERROR al BUSCAR CONTACTO en GRUPO.");
         e.printStackTrace();
     }
 
@@ -158,6 +163,7 @@ public class GrupoDAO {
             }
 
         } catch (SQLException e) {
+            System.err.println("ERROR al BUSCAR ID de grupo.");
             e.printStackTrace();
         }
         return null;
